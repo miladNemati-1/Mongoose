@@ -29,6 +29,8 @@ app.get('/actors/:id', actors.getOne);
 app.put('/actors/:id', actors.updateOne);
 app.post('/actors/:id/movies', actors.addMovie);
 app.delete('/actors/:id', actors.deleteOne);
+app.delete("/actors/:aid/:mid", actors.deleteMovieById);
+app.delete("/actors/deleteplus/:id", actors.deleteMoviesById)
 
 
 //Movie RESTFul  endpoints
@@ -36,3 +38,8 @@ app.get('/movies', movies.getAll);
 app.post('/movies', movies.createOne);
 app.get('/movies/:id', movies.getOne);
 app.put('/movies/:id', movies.updateOne);
+app.delete("/movies/:id", movies.deleteOne);
+app.get("/movies/:year1/:year2", movies.retrieveAll)
+app.delete("/movies/deleteByDate", movies.deleteByDate);
+app.post("/movies/actors/:id", movies.addActor);
+app.delete("/movies/:mid/:aid", movies.deleteActorById);

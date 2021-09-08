@@ -1,12 +1,12 @@
 const mongoose = require('mongoose');
 
-const Actor = require('../models/actor');
-const Movie = require('../models/movie');
+var Actor = require('../models/actor');
+var Movie = require('../models/movie');
 
 module.exports = {
 
     getAll: function (req, res) {
-        Actor.find(function (err, actors) {
+        Actor.find().populate('movies').exec(function (err, actors) {
             if (err) {
                 return res.status(404).json(err);
             } else {
@@ -22,7 +22,7 @@ module.exports = {
         let actor = new Actor(newActorDetails);
         actor.save(function (err) {
             res.json(actor);
-            console.log("added");
+            console.log("added")
         });
     },
 
@@ -54,24 +54,59 @@ module.exports = {
             res.json();
         });
     },
+	deleteOneAndMovies: function (req, res) {
+		Actor.findOneAndRemove({ _id: req.params.id }, function (err) {
+			if (err) return res.status(400).json(err);
+
+			res.json();
+		});
+	},
 
 
-    addMovie: function (req, res) {
-        Actor.findOne({ _id: req.params.id }, function (err, actor) {
-            if (err) return res.status(400).json(err);
-            if (!actor) return res.status(404).json();
+	deleteMovieById: function (req, res) {
+		Actor.findOne({ _id: req.params.aid }, function (err, actor) {
+			if (err) return res.status(400).json(err);
+			if (!actor) return res.status(404).json();
 
-            Movie.findOne({ _id: req.body.id }, function (err, movie) {
-                if (err) return res.status(400).json(err);
-                if (!movie) return res.status(404).json();
+			Movie.findOne({ _id: req.params.mid }, function (err, movie) {
+				if (err) return res.status(400).json(err);
+				if (!movie) return res.status(404).json();
+				const index = actor.movies.indexOf(movie._id);
+				actor.movies.splice(index, 1);
+				actor.save(function (err) {
+					if (err) return res.status(500).json(err);
 
-                actor.movies.push(movie._id);
-                actor.save(function (err) {
-                    if (err) return res.status(500).json(err);
+					res.json(actor);
+				});
+			});
+		});
+	},
 
-                    res.json(actor);
-                });
-            })
-        });
-    }
+	addMovie: function (req, res) {
+		Actor.findOne({ _id: req.params.id }, function (err, actor) {
+			if (err) return res.status(400).json(err);
+			if (!actor) return res.status(404).json();
+
+			Movie.findOne({ _id: req.body.id }, function (err, movie) {
+				if (err) return res.status(400).json(err);
+				if (!movie) return res.status(404).json();
+
+				// actor.movies.push(movie._id);
+				actor.movies = [...actor.movies, movie._id];
+				actor.save(function (err) {
+					if (err) return res.status(500).json(err);
+
+					res.json(actor);
+				});
+			});
+		});
+	},
+
+	deleteMoviesById: function (req, res) {
+		Actor.findOneAndRemove({ _id: req.params.id }, function (err) {
+			if (err) return res.status(400).json(err);
+
+			res.json();
+		});
+	},
 };
