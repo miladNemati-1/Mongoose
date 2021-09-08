@@ -4,7 +4,17 @@ const mongoose = require('mongoose');
 
 module.exports = {
 
+    updateX:  function (req, res) {       
+    
+    Movie.updateMany({"name": "/X/"}, {$inc: {year:1}}, function (err, data) {
+        res.json("X names incremented by one");
+
+    })
+    },
+
     getAll: function (req, res) {
+
+
         Movie.find().populate('actors').exec(function (err, movies) {
             if (err) {
                 return res.status(404).json(err);
@@ -17,6 +27,19 @@ module.exports = {
 
     createOne: function (req, res) {
         let newMovieDetails = req.body;
+
+        try{
+
+        if (JSON.stringify(movieTitleString) === "Xam");{
+            console.log('enters');
+
+        }
+    
+    }
+        catch{
+            console.log("error")
+
+        }
         newMovieDetails._id = new mongoose.Types.ObjectId();
         Movie.create(newMovieDetails, function (err, movie) {
             if (err) return res.status(400).json(err);
@@ -66,9 +89,14 @@ module.exports = {
 	},
 
 	delete: function (req, res) {
-        Movie.deleteMany({ year: 1989 })
-            
-
+		let year1 = req.body.year1;
+		let year2 = req.body.year2;
+		Movie.deleteMany(
+			{year: { $gte: year2, $lte: year1 } },
+			function (err, obj) {
+				res.json(obj.result);
+			}
+		);
 	},
 
 

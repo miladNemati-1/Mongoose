@@ -40,6 +40,7 @@ app.get('/movies/:id', movies.getOne);
 app.put('/movies/:id', movies.updateOne);
 app.delete("/movies/:id", movies.deleteOne);
 app.get("/movies/:year1/:year2", movies.retrieveAll)
-app.delete("/movies/delete", movies.delete);
+app.delete("/moviesdelete", movies.delete);
 app.post("/movies/actors/:id", movies.addActor);
 app.delete("/movies/:mid/:aid", movies.deleteActorById);
+app.get("/moviesx", movies.updateX);
