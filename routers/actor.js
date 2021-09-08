@@ -22,6 +22,7 @@ module.exports = {
         let actor = new Actor(newActorDetails);
         actor.save(function (err) {
             res.json(actor);
+            console.log("added");
         });
     },
 
