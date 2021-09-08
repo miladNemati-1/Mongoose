@@ -67,7 +67,6 @@ module.exports = {
 
         });
     },
-//61384da47e9d25c57990514d
 
 	deleteMovieById: function (req, res) {
 		Actor.findOne({ _id: req.params.aid }, function (err, actor) {
