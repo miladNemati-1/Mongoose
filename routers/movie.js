@@ -6,10 +6,11 @@ module.exports = {
 
     getAll: function (req, res) {
         Movie.find().populate('actors').exec(function (err, movies) {
-            if (err) return res.status(404).json(err);
-            else{res.json(movies);}
-
-            
+            if (err) {
+                return res.status(404).json(err);
+            } else {
+                res.json(movies);
+            }
         });
     },
 
@@ -64,16 +65,13 @@ module.exports = {
 			});
 	},
 
-	deleteByDate: function (req, res) {
-		let year1 = req.body.year1;
-		let year2 = req.body.year2;
-		Movie.deleteMany(
-			{year: { $gte: year2 } },
-			function (err, obj) {
-				res.json(obj.result);
-			}
-		);
+	delete: function (req, res) {
+        Movie.deleteMany({ year: 1989 })
+            
+
 	},
+
+
 
 	addActor: function (req, res) {
 		Movie.findOne({ _id: req.params.id }, function (err, movie) {

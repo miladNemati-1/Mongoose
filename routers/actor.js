@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 var Actor = require('../models/actor');
-var Movie = require('../models/movie');
+const Movie = require('../models/movie');
 
 module.exports = {
 
@@ -48,20 +48,26 @@ module.exports = {
 
 
     deleteOne: function (req, res) {
-        Actor.findOneAndRemove({ _id: req.params.id }, function (err) {
+        Actor.findByIdAndDelete( req.params.id  , function (err, actor) {
             if (err) return res.status(400).json(err);
 
-            res.json();
+
+            for (let i=0; i<actor.movies.length; i++){
+                Movie.findOneAndRemove({_id: actor.movies[i]}, function (err, actor) {
+                    if (err) return res.status(400).json(err);
+                    res.json(actor);
+                })
+                
+
+            }
+
+
+
+
+
         });
     },
-	deleteOneAndMovies: function (req, res) {
-		Actor.findOneAndRemove({ _id: req.params.id }, function (err) {
-			if (err) return res.status(400).json(err);
-
-			res.json();
-		});
-	},
-
+//61384da47e9d25c57990514d
 
 	deleteMovieById: function (req, res) {
 		Actor.findOne({ _id: req.params.aid }, function (err, actor) {
@@ -91,7 +97,7 @@ module.exports = {
 				if (err) return res.status(400).json(err);
 				if (!movie) return res.status(404).json();
 
-				// actor.movies.push(movie._id);
+
 				actor.movies = [...actor.movies, movie._id];
 				actor.save(function (err) {
 					if (err) return res.status(500).json(err);
